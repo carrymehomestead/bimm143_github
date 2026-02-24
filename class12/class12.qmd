@@ -1,0 +1,81 @@
+---
+title: "Class 12 Lab Session"
+format: pdf
+author: Malibu Slattery (A1844012)
+toc: TRUE
+---
+
+## Proportion of G/G in a population
+
+```{r}
+mxl<-read.csv("rs8067378.csv")
+head(mxl)
+```
+
+```{r}
+table(mxl$Genotype..forward.strand.)
+```
+```{r}
+table(mxl$Genotype..forward.strand.)/nrow(mxl)*100
+```
+```{r}
+gbr<-read.csv("gbr_rs8067378.csv")
+head(gbr)
+```
+Find proportion of G|G in GBR population
+
+```{r}
+table(gbr$Genotype..forward.strand.)
+```
+```{r}
+round(table(gbr$Genotype..forward.strand.)/nrow(gbr)*100,2)
+```
+
+## The variant that is associated with childhood asthma is more frequent in GBR population than in the MXL population....let's explore this further...
+
+
+```{r}
+expr<-read.table("rs8067378_ENSG00000172057.6.txt")
+head(expr)
+```
+
+```{r}
+nrow(expr)
+table(expr$geno)
+```
+
+```{r}
+library(ggplot2)
+```
+> Q 13
+  >sample size: A/A (108, median = 31.25), A/G (233, 25.06) G/G (121, 20.07). 
+  
+```{r}
+#I didn't really know how to use the median function that was being talked about, so I used the filter function we've been working with in datacamp.
+library(dplyr)
+
+AA<-expr %>% filter(geno=="A/A")
+head(AA)
+round(median(AA$exp),2)
+
+AG<-expr %>% filter(geno=="A/G")
+head(AG)
+round(median(AG$exp),2)
+
+GG<-expr %>% filter(geno=="G/G")
+head(GG)
+round(median(GG$exp),2)
+
+
+```
+  
+> Q.14 Generate a boxplot with a box per genotype, what could you infer from the relative
+expression value between A/A and G/G displayed in this plot? Does the SNP effect the
+expression of ORMDL3?
+
+```{r}
+ggplot(expr, aes(x=geno, y=  exp, fill = geno)) + geom_boxplot(notch=TRUE) 
+```
+> ans: A/A is more associated with the expression of ORMDL3 and G/G is less associated with the expression of ORMDL3. Thus, you are more likely to express ORMDL3 if you have the former, rather than the latter.
+
+
