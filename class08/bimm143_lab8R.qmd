@@ -1,0 +1,19 @@
+---
+title: "bimm143_lab8R"
+Author: Malibu Slattery (A18488012)
+format: html
+toc: true
+---
+
+## Background
+
+In today's class, we will apply the methods and techniques clustering and PCA to help make sense of a real world breast cancer FNA biopsy data set.
+
+```{r}
+# Save your input data file into your Project directory
+fna.data <- "WisconsinCancer.csv"
+
+# Complete the following code to input the data and store as wisc.df
+wisc.df <- (fna.data, row.names=1)
+```
+

@@ -1,0 +1,279 @@
+---
+title: "class08_mini_project"
+author: "Malibu Slattery (A18488012)"
+toc: true 
+format: pdf
+---
+
+### 1. Background
+
+In today's class, we will apply the methods and techniques clustering and PCA to help make sense of a real world breast cancer FNA biopsy data set.
+
+radius: mean of distances from nucleus center to points on the perimeter;
+texture: a measure of nucleus roughness taken from the standard deviation of gray-scale values;
+perimeter: total boundary length of the nucleus,
+area: total area of the nucleus;
+smoothness: local variation in radius lengths, i.e. how “bumpy” the edge is;
+compactness: measures how circular vs. irregular the shape is;
+concavity: how deeply indented, and
+symmetry: how symmetric the nucleus is
+
+### 2. Exploratory Data Analysis
+
+```{r}
+library(ggplot2)
+# Save your input data file into your Project directory
+fna.data <- "WisconsinCancer.csv"
+
+# Complete the following code to input the data and store as wisc.df
+wisc.df <- read.csv(fna.data, row.names=1)
+
+head(wisc.df, 4)
+
+```
+
+Make sure to remove the first `diagnosis` column -- I don't want to use this for my machine learning models. We'll use this later to compare our results to the expected diagnosis.
+
+```{r}
+# We can use -1 here to remove the first column
+wisc.data <- wisc.df[,-1]
+head(wisc.data)
+```
+
+> Q1. How many observations are in this dataset?
+
+```{r}
+# Create diagnosis vector for later 
+diagnosis <- wisc.df$diagnosis
+head(diagnosis)
+
+dim(wisc.data)
+```
+      > ans: 569
+      
+> Q2. How many of the observations have a malignant diagnosis?
+
+```{r}
+#How many malignant diagnosis are in the dataset?
+wisc.df$diagnosis == "M"
+sum(wisc.df$diagnosis == "M")
+
+#Alternative way...
+head(table(wisc.df$diagnosis))
+```
+      > ans: 212
+      
+> Q3. How many variables/features in the data are suffixed with _mean?
+
+```{r}
+head(wisc.data)
+meannames<-grep("_mean", colnames(wisc.df), value = TRUE)
+meannames2<-grep("_mean", colnames(wisc.df), value = TRUE)
+
+#`grep()` searches for a pattern in x
+length(meannames2)
+```
+      > ans: 10
+ 
+### 3. PCA
+
+Practical PCA issue is scaling...
+scale and center our data before PCA, otherwise the data is going to be unfairly influenced because your data is going to be huge. (eg: if you measured one point in mm versus another in miles)
+
+*prcomp(function for pca)(x = required argument, scale and center = optional argument)*
+
+The main function here is `prcomp()` and we want to make sure we set the optional arguments to `scale=true`
+```{r}
+wisc.pr <- prcomp(wisc.data, scale = TRUE)
+summary(wisc.pr)
+#Cumulative proportion calculates the POV for previous PCAs
+
+# Check column means and standard deviations
+colMeans(wisc.data)
+apply(wisc.data,2,sd)
+```
+
+
+>Q4. From your results, what proportion of the original variance is captured by the first principal component (PC1)?
+      >ans: 44.27%
+>Q5. How many principal components (PCs) are required to describe at least 70% of the original variance in the data?
+      >ans: 3
+>Q6. How many principal components (PCs) are required to describe at least 90% of the original variance in the data?
+      >ans: 7
+      
+```{r}
+library(ggplot2)
+```
+
+
+```{r}
+biplot(wisc.pr)
+ggplot(wisc.pr$x) +
+  aes(PC1, PC2, col=diagnosis) +
+  geom_point()
+```
+> Q7. What stands out to you about this plot? Is it easy or difficult to understand? Why?
+      > ans: This plot is very clustered together and not easy to read.
+
+> Q8. Generate a similar plot for principal components 1 and 3. What do you notice about these plots?
+      > ans: This plot is much easier to read because it narrows down groups into visually manageable plots and patterns.
+      
+*More on PCA score plots...*
+
+This graph shows that cells with similar characteristics will cluster. 
+
+```{r}
+library("stats")
+```
+
+
+```{r}
+# Calculate variance of each component
+pr.var <- wisc.pr$sdev^2
+head(pr.var)
+
+# Variance explained by each principal component: pve
+pve <- pr.var / sum(pr.var)
+pve
+
+# Plot variance explained for each principal component
+plot(c(1,pve), xlab = "Principal Component", 
+     ylab = "Proportion of Variance Explained", 
+     ylim = c(0, 1), type = "o")
+
+barplot(pve, ylab = "Percent of Variance Explained",
+     names.arg=paste0("PC",1:length(pve)), las=2, axes = FALSE)
+      axis(2, at=pve, labels=round(pve,2)*100 )
+
+## ggplot based graph
+#install.packages("factoextra")
+library(factoextra)
+fviz_eig(wisc.pr, addlabels = TRUE)
+```
+
+```{r}
+wisc.pr$rotation[,1]
+```
+
+> Q9. For the first principal component, what is the component of the loading vector (i.e. wisc.pr$rotation[,1]) for the feature concave.points_mean? This tells us how much this original feature contributes to the first PC. Are there any features with larger contributions than this one?
+      > ans:  -0.26085376. No, there aren't. 
+      
+### 4. Hierarchical Clustering
+
+## Results of hierarchical clustering
+
+> Q10. Using the plot() and abline() functions, what is the height at which the clustering model has 4 clusters?
+    > ans: 20
+
+```{r}
+# Scale the wisc.data data using the "scale()" function
+wisc.hclust1 <- hclust(dist(scale(wisc.data)), method = "complete")
+wisc.hclust <- hclust(dist(scale(wisc.data)))
+
+plot(wisc.hclust)
+abline(wisc.hclust, h=20, col="red", lty=2)
+```
+
+## Selecting number of clusters
+
+You can also use the `cutree()` function and set k = 4 instead of h=height.
+
+```{r}
+wisc.hclust.clusters <- cutree(wisc.hclust, k = 4)
+table(wisc.hclust.clusters, diagnosis)
+```
+
+## Using different methods
+
+> Q12. Which method gives your favorite results for the same data.dist dataset? Explain your reasoning.
+      > ans: My favorite result is the "complete" version, because it's visually organized and condensed. 
+
+### 5. Combining Methods
+
+# Clustering on PCA results
+
+Here we will take our PCA results and use those as an input for clustering. In other words our `wisc.pr$x` scores that we plotted above (the main output from PCA --- how the data lie on our new pc axis/variables) and use a subset of those PC's that capture most variance as input for `hclust()`....
+
+```{r}
+pc.dist<-dist(wisc.pr$x[,1:3])
+wisc.pr.hclust <- hclust(pc.dist, method = "ward.D2")
+plot(wisc.pr.hclust)
+```
+
+Cut the dendrogram/tree into groups/clusters
+```{r}
+grps <- cutree(wisc.pr.hclust, k=2)
+table(grps)
+```
+
+```{r}
+ggplot(wisc.pr$x) +
+  aes(PC1, PC2) +
+  geom_point(col=grps)
+```
+
+> Q13. How does clustering into `grps` with values of 1 or 2 correspond with expert diagnosis?
+
+```{r}
+table(grps, diagnosis)
+```
+
+```{r}
+## Use the distance along the first 7 PCs for clustering i.e. wisc.pr$x[, 1:7]
+wisc.pr.hclust.2 <- hclust(dist(wisc.pr$x[, 1:7]), method="ward.D2", members = NULL)
+
+wisc.pr.hclust.clusters <- cutree(wisc.pr.hclust.2, k=2)
+```
+
+```{r}
+table(wisc.pr.hclust.clusters, diagnosis)
+
+```
+
+
+```{r}
+# Compare to actual diagnoses
+
+table(wisc.hclust.clusters, diagnosis)
+
+```
+
+>Q14. How well do the hierarchical clustering models you created in the previous sections (i.e. without first doing PCA) do in terms of separating the diagnoses? Again, use the table() function to compare the output of each model (wisc.hclust.clusters and wisc.pr.hclust.clusters) with the vector containing the actual diagnoses.
+      > ans: I think that while HC models are useful for basic visual assessments, PCA results nail down variance and actually visualize the groups and their relation to one another better.
+
+
+### Sensistivity/Specificity
+
+My clustering groups 1 are mostly "M" diagnosis (179) and my clustering 2 diagnosis are mostly "B" (333)...
+
+But....with the table, we have 24 false positives (eg: if you're in group 1, you'll falsely test positive for benign). True negatives 333. True positives are 179. 33 false negatives.
+
+### Predictions
+
+```{r}
+url <- "new_samples.csv"
+url <- "https://tinyurl.com/new-samples-CSV"
+new <- read.csv(url)
+npc <- predict(wisc.pr, newdata=new)
+npc
+
+library(ggplot2)
+plot(wisc.pr$x[,1:2], col=grps)
+points(npc[,1], npc[,2], col="blue", pch=16, cex=3)
+text(npc[,1], npc[,2], c(1,2), col="white")
+```
+
+> Q16. Which of these new patients should we prioritize for follow up based on your results?
+  > ans: Group 1.
+
+## ChatGPT Usage
+==========================================
+On Feb 1, 2026, at 10pm, I asked chat: 
+
+"wisc.pr.hclust.2 <- hclust(h, method="ward.D2", members = NULL) how to fix Error in if (is.na(n) || n > 65536L) stop("size cannot be NA nor exceed 65536") : missing value where TRUE/FALSE needed"
+
+Chat responded with:
+
+"That error isn’t coming from hclust() itself — it’s almost always because h (your distance object) contains NAs or is malformed." It then told me to check the class and if it wasn't a distance matrix, to use dist(wisc.pr).
+
+==========================================
