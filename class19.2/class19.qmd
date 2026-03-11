@@ -1,0 +1,33 @@
+---
+title: "class19"
+format: html
+---
+
+Useful functions for this lab...
+bio3d
+read.fasta
+conserv()
+
+Useful programs for this lab...
+blastp
+hmmer
+
+```{r}
+library(bio3d)
+
+fast<-read.fasta("A18488012_mutant_seq.fa")
+fast
+```
+```{r}
+blast<-blast.pdb(fast)
+```
+We could score residue conservations...
+```{r}
+mutation.sites <- which(conserv(fast) <1)
+
+
+paste(fast$ali[1,mutation.sites],
+      mutation.sites,
+      fast$ali[2,mutation.sites])
+```
+
