@@ -5,10 +5,6 @@ author: Malibu Slattery (A18488012)
 toc: true
 ---
 
-```{r}
-setwd("~/Desktop/bimm 143/class10")
-```
-
 
 ## 1. Introduction to the RCSB Protein Data Bank (PDB)
 
