@@ -5,11 +5,6 @@ format: pdf
 toc: true
 ---
 
-```{r}
-setwd("~/Desktop/bimm 143/class09")
-```
-
-
 ## 2. Importing candy data
 ```{r}
 candy_file <- "candy-data.csv"
