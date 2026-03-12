@@ -5,7 +5,7 @@ My classwork for BIMM 143 at UCSD can be found at [BIMM143](https://bioboot.gith
 
 ## Index of Materials (note: starts at class4, not class1)
 
-- Class 05 [Data exploration and visualization in R][class05/bimm143_lab5datavisR.qmd]
+- Class 05 [Data exploration and visualization in R][class05/bimm143_lab5datavisR.md]
 
 - Class 06 part 1 [Why, when and how of writing your own R functions][class06/bimm143_lab6HW.qmd]
 - Class 06 part 2 [Why, when and how of writing your own R functions][class06/bimm143_lab6R.qmd]
