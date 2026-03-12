@@ -19,12 +19,12 @@ setwd("~/Desktop/bimm 143/class14")
 
 ```{r}
 # Import metadata and take a peek
-colData = read.csv("~/Desktop/bimm 143/class14/meta.1", row.names=1)
+colData = read.csv("~/Desktop/bimm__143/class14/meta.1", row.names=1)
 head(colData)
 ```
 ```{r}
 # Import countdata
-countData = read.csv("~/Desktop/bimm 143/class14/feat.1", row.names=1)
+countData = read.csv("~/Desktop/bimm__143/class14/feat.1", row.names=1)
 head(countData)
 ```
 > Q. Complete the code below to remove the troublesome first column from countData
