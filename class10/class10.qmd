@@ -183,7 +183,7 @@ We could view these in R with *bio3dview** `view.pdbs()` function.
 
 ```{r}
 library(bio3dview)
-view.pdbs(pdbs, colorScheme = "residue")
+#view.pdbs(pdbs, colorScheme = "residue")
 ```
 
 We can run PCA on our `pdbs` object and use the `pca()` function.
