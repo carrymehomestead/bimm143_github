@@ -1,9 +1,9 @@
 # Bimm143_Github
 
-#Portfolio
+# Portfolio
 My classwork for BIMM 143 at UCSD can be found at [BIMM143](https://bioboot.github.io/bimm143_W26/)
 
-## Index of Materials (note: starts at class4, not class1)
+## Index of Materials (note: starts at class5, not class1)
 
 - Class 05 [Data exploration and visualization in R](class05/bimm143_lab5datavisR.md)
 
