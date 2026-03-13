@@ -17,7 +17,7 @@ My classwork for BIMM 143 at UCSD can be found at [BIMM143](https://bioboot.gith
 
 - Class 09 [Project: Candy mini-project](class09/class09.R.md)
 
-- Class 10 [Structural Bioinformatics (pt1)]
+- Class 10 [Structural Bioinformatics (pt1)](class10/class10.md)
 
 - Class 11 [Structural Bioinformatics (pt2 AlphaFold)](class11/class11.md)
 
@@ -27,9 +27,9 @@ My classwork for BIMM 143 at UCSD can be found at [BIMM143](https://bioboot.gith
 
 - Class 14 [Project: RNA-Seq mini project](class14/rnaseqclass14.md)
 
-- Class 15 [Hands-on with Git and GitHub][na]
+- Class 15 [Hands-on with Git and GitHub] ... no R files :)
 
-- Class 16 [Essential UNIX for bioinformatics][na]
+- Class 16 [Essential UNIX for bioinformatics] ... no R files :)
 
 - Class 17 [Analyzing sequencing data in the cloud](class17.1/class17.1.md)
 
